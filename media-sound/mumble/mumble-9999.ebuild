@@ -10,7 +10,7 @@ HOMEPAGE="https://wiki.mumble.info"
 if [[ "${PV}" = 9999 ]] ; then
 	inherit git-r3
 	EGIT_REPO_URI="https://github.com/mumble-voip/mumble.git"
-	EGIT_SUBMODULES=( '-*' celt-0.7.0-src celt-0.11.0-src themes/Mumble 3rdparty/rnnoise-src )
+	EGIT_SUBMODULES=( '-*' themes/Mumble 3rdparty/rnnoise-src )
 else
 	MY_P="${PN}-${PV/_/~}"
 	SRC_URI="https://mumble.info/snapshot/${MY_P}.tar.gz"
@@ -31,6 +31,7 @@ RDEPEND="
 	dev-qt/qtwidgets:5
 	dev-qt/qtxml:5
 	>=dev-libs/protobuf-2.2.0:=
+	>=media-libs/celt-0.7.0
 	>=media-libs/libsndfile-1.0.20[-minimal]
 	>=media-libs/speex-1.2.0
 	media-libs/speexdsp
@@ -63,7 +64,7 @@ src_configure() {
 	}
 
 	local conf_add=(
-		bundled-celt
+		no-bundled-celt
 		no-bundled-opus
 		no-bundled-speex
 		no-embed-qt-translations
@@ -112,7 +113,7 @@ src_install() {
 	doman man/mumble-overlay.1
 	doman man/mumble.1
 
-	dolib.so "${dir}"/libmumble.so* "${dir}"/libcelt0.so* "${dir}"/plugins/lib*.so*
+	dolib.so "${dir}"/libmumble.so* "${dir}"/plugins/lib*.so*
 }
 
 pkg_postinst() {
